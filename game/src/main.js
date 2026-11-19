@@ -34,6 +34,10 @@ const seedParam = Number.parseInt(params.get('seed') ?? '', 10);
 const seed = Number.isInteger(seedParam) ? seedParam : 7;
 const rng = makeRng(seed);
 
+// A small read handle for automated playtests (and the finalist review):
+// position, wanted level, mission and car state, nothing secret.
+window.__costaPalma = null;
+
 const canvas = document.getElementById('game');
 const statusEl = document.getElementById('status');
 const render = createRenderer(canvas);
@@ -738,6 +742,10 @@ document.getElementById('garageTable').addEventListener('click', (event) => {
 });
 
 // ---- Main loop --------------------------------------------------------------------
+window.__costaPalma = {
+  state, player, car, missions, traffic, peds, police, combat,
+  teleport(x, z) { player.x = x; player.z = z; if (!state.inCar) { player.mesh.position.set(x, 0, z); } },
+};
 let last = performance.now();
 let orbitAngle = 0;
 function frame(now) {

@@ -45,7 +45,7 @@ function makeHeliMesh() {
   const tailRotor = new THREE.Mesh(new THREE.BoxGeometry(0.1, 2.2, 0.5), new THREE.MeshLambertMaterial({ color: 0x222222 }));
   tailRotor.position.set(0.4, 0.5, -6.2);
   g.add(tailRotor);
-  const spot = new THREE.Mesh(new THREE.ConeGeometry(4.5, 26, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0xfff2b0, transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false }));
+  const spot = new THREE.Mesh(new THREE.ConeGeometry(3.4, 26, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0xfff2b0, transparent: true, opacity: 0.10, side: THREE.DoubleSide, depthWrite: false }));
   spot.rotation.x = Math.PI;
   spot.position.y = -13;
   g.add(spot);
