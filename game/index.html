@@ -3,16 +3,145 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Block Dodger</title>
+<title>Costa Palma — Make GTA 6</title>
 <style>
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #11141b; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #1a0f2e; font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif; }
   #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
-  /* Read aloud, never shown: the status line screen readers announce. */
+  #hud { position: fixed; inset: 0; pointer-events: none; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.85); z-index: 5; }
+  .panel { background: rgba(10, 8, 24, .55); border: 1px solid rgba(255,255,255,.22); border-radius: 10px; }
+  #topleft { position: absolute; top: 12px; left: 12px; padding: 10px 14px; min-width: 230px; }
+  #stars { font-size: 26px; letter-spacing: 4px; line-height: 1; }
+  #stars .on { color: #ffd23e; } #stars .off { color: rgba(255,255,255,.28); }
+  #money { font-size: 30px; font-weight: 800; color: #7dff8a; margin-top: 2px; }
+  #hpwrap { margin-top: 6px; display: flex; align-items: center; gap: 8px; }
+  #hpbar { width: 150px; height: 12px; background: rgba(255,255,255,.22); border-radius: 6px; overflow: hidden; }
+  #hpfill { height: 100%; width: 100%; background: linear-gradient(90deg, #37e05c, #9dff6e); }
+  #rank { margin-top: 6px; font-size: 13px; letter-spacing: 2px; color: #ffd23e; font-weight: 700; }
+  #topright { position: absolute; top: 12px; right: 12px; text-align: center; }
+  #minimap { width: 176px; height: 176px; border-radius: 50%; border: 3px solid rgba(255,255,255,.55); background: rgba(8,10,26,.72); box-shadow: 0 0 0 4px rgba(0,0,0,.35); }
+  #clock { margin-top: 5px; font-size: 13px; letter-spacing: 1px; font-weight: 700; }
+  #objective { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); padding: 8px 18px; font-size: 16px; font-weight: 800; letter-spacing: .5px; text-align: center; max-width: 620px; }
+  #objective small { display: block; font-size: 11px; letter-spacing: 2px; color: #ffd23e; }
+  #chain { position: absolute; top: 34%; left: 50%; transform: translateX(-50%); font-size: 52px; font-weight: 900; color: #ffd23e; display: none; }
+  #chain small { display: block; font-size: 15px; text-align: center; letter-spacing: 4px; color: #fff; }
+  #dialog { position: absolute; bottom: 96px; left: 50%; transform: translateX(-50%); width: min(640px, 82vw); padding: 10px 16px; display: none; }
+  #dialog .who { color: #ffd23e; font-weight: 800; letter-spacing: 1px; font-size: 14px; }
+  #dialog .what { font-size: 16px; line-height: 1.35; }
+  #speedo { position: absolute; right: 14px; bottom: 14px; padding: 8px 14px; text-align: right; }
+  #vehname { font-size: 14px; letter-spacing: 2px; color: #ffd23e; font-weight: 700; }
+  #speed { font-size: 34px; font-weight: 900; line-height: 1; }
+  #speed small { font-size: 13px; }
+  #controls { position: absolute; left: 12px; bottom: 12px; font-size: 12.5px; padding: 7px 12px; opacity: .92; }
+  #toast { position: absolute; top: 84px; left: 50%; transform: translateX(-50%); font-size: 22px; font-weight: 900; color: #7dff8a; display: none; }
+  #arrow { position: absolute; left: 50%; top: 118px; transform: translateX(-50%); font-size: 15px; font-weight: 800; color: #fff; display: none; }
+  .screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #fff; z-index: 10; background: linear-gradient(180deg, rgba(26,8,46,.88), rgba(8,4,20,.94)); }
+  .screen h1 { font-size: 64px; margin: 0; letter-spacing: 6px; color: #ffd23e; text-shadow: 0 4px 0 #c2437a, 0 8px 24px rgba(0,0,0,.6); }
+  .screen h2 { font-size: 18px; letter-spacing: 5px; color: #7dd8ff; margin: 6px 0 18px; }
+  .screen p { max-width: 620px; line-height: 1.5; font-size: 15px; opacity: .92; }
+  .btn { pointer-events: auto; cursor: pointer; display: inline-block; margin: 6px; padding: 12px 28px; border-radius: 999px; border: 2px solid #ffd23e; background: #ffd23e; color: #241103; font-weight: 900; font-size: 16px; letter-spacing: 1px; }
+  .btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.6); }
+  .board { text-align: left; width: min(680px, 92vw); background: rgba(10,8,26,.92); border: 1px solid rgba(255,210,62,.5); border-radius: 14px; padding: 18px 22px; }
+  .board h3 { margin: 0 0 4px; color: #ffd23e; letter-spacing: 3px; }
+  .board table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .board td { padding: 7px 4px; border-bottom: 1px solid rgba(255,255,255,.14); }
+  .board td:last-child { text-align: right; color: #7dff8a; font-weight: 800; white-space: nowrap; }
+  .board .done { color: #7dff8a; } .board .todo { color: rgba(255,255,255,.55); }
+  .statgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 26px; text-align: left; font-size: 16px; margin: 14px 0; }
+  .statgrid b { color: #ffd23e; }
   #status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .hidden { display: none !important; }
 </style>
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.min.js" } }
+</script>
 </head>
 <body>
-<canvas id="game" aria-label="Block Dodger: move the paddle left and right to dodge falling blocks and catch coins"></canvas>
+<canvas id="game" aria-label="Costa Palma: an open-world crime game. Explore the city on foot and by car, take missions, escape the police."></canvas>
+<div id="hud">
+  <div id="topleft" class="panel">
+    <div id="stars"><span class="off">★</span><span class="off">★</span><span class="off">★</span><span class="off">★</span><span class="off">★</span></div>
+    <div id="money">$0</div>
+    <div id="hpwrap"><div id="hpbar"><div id="hpfill"></div></div><span id="hpnum">100</span></div>
+    <div id="rank">ROOKIE · COSTA PALMA</div>
+  </div>
+  <div id="topright">
+    <canvas id="minimap" width="352" height="352"></canvas>
+    <div id="clock">18:42 · GOLDEN HOUR</div>
+  </div>
+  <div id="objective" class="panel"><small id="objtag">MISSION 1 · FIRST KEY</small><span id="objtext">Steal any car on the street</span></div>
+  <div id="chain">9 CHAIN<small>KEEP IT GOING</small></div>
+  <div id="toast"></div>
+  <div id="arrow">▲ 128 m</div>
+  <div id="dialog" class="panel"><div class="who" id="dlgwho">NADIA CRUZ</div><div class="what" id="dlgwhat"></div></div>
+  <div id="speedo" class="panel"><div id="vehname">ON FOOT</div><div id="speed">0 <small>km/h</small></div></div>
+  <div id="controls" class="panel">WASD move · E enter car · F punch · SPACE shoot · H horn · M map · TAB board · P pause</div>
+</div>
+
+<div id="title" class="screen">
+  <h1>COSTA PALMA</h1>
+  <h2>AN OPEN-WORLD CRIME STORY · GOLDEN HOUR ON THE COAST</h2>
+  <p>Eight story missions. One coastal city. Steal cars, outrun the Palma police,
+  climb from ROOKIE to LEGEND OF THE COAST — and pull off the Palma Job.
+  <br>12 Sun Medallions hide around the city. A street race runs every night on the Neon Strip.</p>
+  <div>
+    <button class="btn" id="btnContinue">CONTINUE</button>
+    <button class="btn ghost" id="btnNew">NEW GAME</button>
+  </div>
+  <p style="font-size:13px;opacity:.75">WASD move · E enter car · F punch · SPACE shoot · H horn · M map · TAB missions · P pause<br>
+  Best played with sound on. All names, characters and places are original.</p>
+</div>
+
+<div id="pause" class="screen hidden">
+  <h1 style="font-size:44px">PAUSED</h1>
+  <p>Costa Palma waits for no one — except right now.</p>
+  <div><button class="btn" id="btnResume">RESUME</button>
+  <button class="btn ghost" id="btnQuitTitle">QUIT TO TITLE</button></div>
+</div>
+
+<div id="board" class="screen hidden" style="background:rgba(8,4,20,.72)">
+  <div class="board">
+    <h3>MISSION BOARD — COSTA PALMA</h3>
+    <div style="font-size:13px;opacity:.8;margin-bottom:8px">Nadia Cruz · Silas the Broker · Old Tomas · Lena Mar — vs. Dario Flint's crew</div>
+    <table id="missionTable"></table>
+    <div style="margin-top:10px;font-size:13.5px">Sun Medallions: <b id="medCount" style="color:#ffd23e">0 / 12</b> · Street race: <b style="color:#7dff8a">Neon Strip, nightly, $200</b> · TAB to close</div>
+  </div>
+</div>
+
+<div id="mapscreen" class="screen hidden" style="background:rgba(8,4,20,.78)">
+  <h1 style="font-size:34px">MAP OF COSTA PALMA</h1>
+  <canvas id="bigmap" width="640" height="640" style="border:3px solid rgba(255,255,255,.5);border-radius:12px;background:rgba(8,10,26,.8)"></canvas>
+  <p>Plaza · Marina · Beach Road · Neon Strip · Docks · Old Town — M to close</p>
+</div>
+
+<div id="garage" class="screen hidden" style="background:rgba(8,4,20,.72)">
+  <div class="board">
+    <h3>YOUR GARAGE — PALMA GARAGE</h3>
+    <div style="font-size:13px;opacity:.8;margin-bottom:8px">Park a stolen car here to keep it. Up to 4 slots.</div>
+    <table id="garageTable"></table>
+    <div style="margin-top:10px"><button class="btn" id="btnCloseGarage">CLOSE (G)</button></div>
+  </div>
+</div>
+
+<div id="busted" class="screen hidden">
+  <h1 style="font-size:56px;color:#7dd8ff">BUSTED</h1>
+  <p id="bustedText">The Palma police caught you. Bail cost you $150.</p>
+  <div><button class="btn" id="btnBustedRetry">TRY AGAIN</button></div>
+</div>
+
+<div id="wasted" class="screen hidden">
+  <h1 style="font-size:56px;color:#ff5d5d">WASTED</h1>
+  <p id="wastedText">You went down in Costa Palma. The hospital bill cost you $150.</p>
+  <div><button class="btn" id="btnWastedRetry">TRY AGAIN</button></div>
+</div>
+
+<div id="victory" class="screen hidden">
+  <h1 style="font-size:52px">COSTA PALMA IS YOURS</h1>
+  <h2>THE PALMA JOB IS DONE — LEGEND OF THE COAST</h2>
+  <div class="statgrid" id="victoryStats"></div>
+  <div><button class="btn" id="btnPlayAgain">PLAY AGAIN</button>
+  <button class="btn ghost" id="btnKeepCruising">KEEP CRUISING</button></div>
+</div>
+
 <p id="status" role="status" aria-live="polite"></p>
 <script type="module" src="./src/main.js"></script>
 </body>
