@@ -8,6 +8,15 @@ An original open-world crime game set in **Costa Palma**, a sun-soaked coastal
 city at golden hour (18:42). Explore on foot and by stolen car, outrun the
 Palma police, and climb from ROOKIE to LEGEND OF THE COAST.
 
+## Screenshots
+
+Four real renders of the game's own code (`?shot=cover|street|board|victory&seed=7`):
+
+1. **1-cover.jpg** — the Storm Warning chase: 4★ wanted, helicopter, roadblock.
+2. **2-street.jpg** — on foot in the living city: pedestrians, traffic, palms.
+3. **3-board.jpg** — the mission board: 8 named missions, rewards, medallions.
+4. **4-victory.jpg** — "COSTA PALMA IS YOURS" with full end-game statistics.
+
 ## Play
 
 `node serve.ts`, then open http://localhost:8080 — no build step, no network,

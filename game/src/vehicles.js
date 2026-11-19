@@ -70,10 +70,14 @@ export function createPlayerCar(scene) {
   return car;
 }
 
+export function topSpeed(model) {
+  return 34 * (model.top / 34);
+}
+
 /** Arcade driving: accelerate, brake, reverse, steer harder at low speed, drift dust. */
 export function driveCar(car, input, dt, collide, onCrash) {
   const m = car.model;
-  const top = 34 * (m.top / 34);
+  const top = topSpeed(m);
   const accel = 26 * (m.accel || 1);
   if (input.fwd > 0) car.speed += accel * dt;
   else if (input.fwd < 0) {

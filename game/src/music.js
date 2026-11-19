@@ -72,6 +72,7 @@ export function createMusic() {
       timer = setInterval(playStep, 300);
     },
     setIntensity(wanted) { intensity = wanted; },
+    setVolume(v) { if (master) master.gain.setTargetAtTime(v, ctx.currentTime, 0.1); },
     stop() {
       if (timer) { clearInterval(timer); timer = null; }
     },

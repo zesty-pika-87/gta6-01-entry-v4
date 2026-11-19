@@ -111,7 +111,7 @@ export const MISSIONS = [
   },
   {
     id: 7, name: 'Storm Warning', giver: 'Nadia Cruz', reward: 1400,
-    intro: ['Flint called in every cruiser in Costa Palma. Three stars, roadblocks on the roads, rain on the way. Get to the garage — and do not stop for anyone.'],
+    intro: ['Flint called in every cruiser in Costa Palma. Roadblocks on the roads, rain on the way. Get to the garage — and do not stop for anyone.'],
     steps: [
       { text: 'Break through the roadblock — reach the Garage', target: { x: 30, z: -66 }, radius: 9 },
     ],

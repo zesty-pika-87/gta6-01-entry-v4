@@ -26,6 +26,8 @@ export function createRenderer(canvas) {
   return {
     renderer, scene, camera, resize,
     render() { renderer.render(scene, camera); },
+    /** Draw calls in the last frame — handy when checking headless performance. */
+    drawCalls() { return renderer.info.render.calls; },
   };
 }
 

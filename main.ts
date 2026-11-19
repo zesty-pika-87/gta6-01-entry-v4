@@ -3,7 +3,10 @@
 // /output (or MAKEFUN_OUTPUT_DIR outside the grader) and writes
 // /output/dossier.json with the vendored make.fun library, exactly as the
 // starter's program does. The game itself is plain static files under game/ —
-// a three.js open world that plays offline in desktop Chrome.
+// a three.js open world that plays offline in desktop Chrome. Costa Palma is
+// an original city: eight story missions, a 5-star wanted system with a
+// helicopter and roadblocks, traffic, pedestrians, combat, a garage, ranks
+// and a save — all written from scratch for this entry.
 //
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 

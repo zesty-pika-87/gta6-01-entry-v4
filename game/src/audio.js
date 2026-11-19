@@ -102,6 +102,7 @@ export function createAudio() {
     shoot() { noise(0.12, 0.5, 2600); tone(190, 0.1, 'square', 0.22, 70); },
     punch() { noise(0.09, 0.4, 700); tone(120, 0.09, 'sine', 0.3, 55); },
     horn() { tone(370, 0.35, 'square', 0.16); tone(466, 0.35, 'square', 0.12); },
+    skid() { noise(0.28, 0.16, 1400); },
     pickup() { tone(880, 0.12, 'sine', 0.25); setTimeout(() => tone(1320, 0.18, 'sine', 0.25), 90); },
     coin() { tone(1046, 0.1, 'triangle', 0.22); setTimeout(() => tone(1568, 0.16, 'triangle', 0.2), 70); },
     explosion() { noise(0.7, 0.6, 500); tone(90, 0.6, 'sine', 0.4, 30); },

@@ -6,10 +6,10 @@
 // how they talk to each other.
 
 import * as THREE from 'three';
-import { CAR, CITY, COMBAT, MISSIONS, MEDALLION_SPOTS, RACE_CHECKPOINTS, WANTED, CAR_MODELS } from './config.js';
+import { CITY, COMBAT, MISSIONS, MEDALLION_SPOTS, RACE_CHECKPOINTS, WANTED, CAR_MODELS } from './config.js';
 import { makeRng } from './random.js';
 import { createInput, ACT_ENTER, ACT_PUNCH, ACT_SHOOT, ACT_HORN, ACT_PAUSE, ACT_BOARD, ACT_MAP, ACT_GARAGE, ACT_RELOAD } from './input.js';
-import { createState, addMoney, addChain, currentMission, rankFor } from './state.js';
+import { createState, addMoney, addChain, currentMission } from './state.js';
 import { createAudio } from './audio.js';
 import { createMusic } from './music.js';
 import { createParticles } from './particles.js';
@@ -350,6 +350,7 @@ function respawnAfterFail() {
   state.wanted = 0;
   state.chain = 0;
   state.rain = false;
+  feel.reset();
   flags.thugsFor = -1;
   flags.raceStarted = false;
   state.raceActive = false;
@@ -366,7 +367,6 @@ function respawnAfterFail() {
 // ---- Modes -----------------------------------------------------------------------
 function startPlay(fresh) {
   if (fresh) {
-    const keep = state;
     Object.assign(state, createState());
     state.mode = 'play';
     combat.clearThugs();
@@ -395,6 +395,7 @@ function startPlay(fresh) {
 function showVictory() {
   state.mode = 'victory';
   state.victoryShown = true;
+  particles.confetti(player.x, 3, player.z);
   hud.fillVictory(state);
   hud.setScreen('victory');
   audio.mission();
@@ -462,7 +463,7 @@ function handleActions(actions) {
     const hit = combat.shoot(player, (thug) => onThugDown(thug), particles);
     if (hit) addChain(state, 1);
     commitCrime(WANTED.crimeShoot);
-    peds.update(0, player, { x: player.x, z: player.z });
+    peds.scatter(player.x, player.z, 14);
   }
   if (actions & ACT_RELOAD && state.ammo < COMBAT.ammoMax) {
     state.reloadTimer = COMBAT.reloadTime;
@@ -535,7 +536,10 @@ function step(dt) {
       particles.dust(car.x, 0.5, car.z);
       commitCrime(WANTED.crimeCrash * 0.5);
     });
-    if (drifting) particles.dust(car.x - Math.sin(car.heading) * 2, 0.4, car.z - Math.cos(car.heading) * 2);
+    if (drifting) {
+      particles.dust(car.x - Math.sin(car.heading) * 2, 0.4, car.z - Math.cos(car.heading) * 2);
+      audio.skid();
+    }
     player.x = car.x;
     player.z = car.z;
     player.heading = car.heading;
@@ -661,7 +665,6 @@ function step(dt) {
   }, () => damagePlayer(5));
   if (state.wanted === 0) caughtTimer = 0;
   combat.update(dt, state, player, camera, (thug) => onThugDown(thug), (dmg) => damagePlayer(dmg), particles);
-  for (const thug of combat.thugs) combat.setBar(thug);
   missions.update(dt, state, player, state.time);
   world.update(dt, state.time);
   particles.update(dt);
@@ -776,6 +779,7 @@ if (shotName) {
     particles.update(1 / 60);
   }
   story.update(0.01, (who, text) => hud.showDialog(who, text), () => hud.hideDialog());
+  missions.update(0.016, state, player, 100);
   hud.update(state, missions.objectiveText(state), player, missions.targetPos(state), 0.016);
   drawMinimap(document.getElementById('minimap'), minimapView());
   feel.snapTo({ x: player.x, y: 0, z: player.z }, player.heading, state.inCar);

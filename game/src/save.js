@@ -8,6 +8,7 @@ import { SAVE_KEY } from './config.js';
 export function saveGame(state) {
   try {
     const data = {
+      v: 4,
       money: state.money,
       totalEarned: state.totalEarned,
       missionsDone: state.missionsDone,

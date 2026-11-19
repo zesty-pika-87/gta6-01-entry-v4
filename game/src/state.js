@@ -73,3 +73,13 @@ export function addChain(state, n = 1) {
 export function currentMission(state) {
   return state.missionIndex < MISSIONS.length ? MISSIONS[state.missionIndex] : null;
 }
+
+/** Whole stars shown in the HUD, 0..5, from the continuous heat value. */
+export function wantedStars(state) {
+  return Math.min(5, Math.floor(state.heat + 0.001));
+}
+
+/** Mission progress for the board: how many of the eight are done. */
+export function missionProgress(state) {
+  return { done: state.missionsDone, total: MISSIONS.length };
+}

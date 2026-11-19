@@ -51,6 +51,11 @@ export function createParticles(scene) {
     sparks(x, y, z) { burst(x, y, z, 10, 0xffd23e, 7, 0.35, -4); },
     smoke(x, y, z) { burst(x, y, z, 16, 0x555560, 3.5, 1.4, 1.2); },
     glint(x, y, z) { burst(x, y, z, 8, 0x7dff8a, 2.5, 0.8, 0.5); },
+    confetti(x, y, z) {
+      burst(x, y, z, 24, 0xffd23e, 6, 1.6, -3);
+      burst(x, y, z, 16, 0xff5df2, 5, 1.4, -3);
+      burst(x, y, z, 16, 0x39d5ff, 5, 1.4, -3);
+    },
     rain(x, y, z) { spawn(x, y, z, 0, -22, 0, 0.5, 0.6, 0.75, 1, 0); },
     update(dt) {
       for (let i = 0; i < MAX; i += 1) {

@@ -84,6 +84,10 @@ export function createPolice(scene, rng) {
   function setRoadblock(on, px, pz, heading) {
     if (roadblock) {
       for (const m of roadblock) scene.remove(m);
+      // The block's cruisers leave the chase pool too, or they would drive on invisible.
+      for (let i = cruisers.length - 1; i >= 0; i -= 1) {
+        if (roadblock.includes(cruisers[i].mesh)) cruisers.splice(i, 1);
+      }
       roadblock = null;
     }
     if (!on) return;

@@ -17,6 +17,8 @@ export function createFeel(camera) {
   return {
     addShake(amount) { trauma = Math.min(1, trauma + amount); },
     hitStopMs(ms) { hitStop = Math.max(hitStop, ms / 1000); },
+    /** Clear shake and hit-stop, e.g. after a respawn. */
+    reset() { trauma = 0; hitStop = 0; },
     /** Returns false while a hit-stop is active (the caller skips the step). */
     consumeHitStop(dt) {
       if (hitStop <= 0) return false;

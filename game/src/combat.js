@@ -112,9 +112,12 @@ export function createCombat(scene, rng) {
       thug.mesh.rotation.y = thug.heading;
       thug.mesh.userData.legL.rotation.x = Math.sin(thug.phase) * 0.5;
       thug.mesh.userData.legR.rotation.x = -Math.sin(thug.phase) * 0.5;
-      // Face the health bar at the camera.
+      // Face the health bar at the camera and keep its fill honest.
       thug.mesh.userData.barBg.quaternion.copy(camera.quaternion);
       thug.mesh.userData.barFg.quaternion.copy(camera.quaternion);
+      const fill = Math.max(0, thug.hp / thug.maxHp);
+      thug.mesh.userData.barFg.scale.x = fill;
+      thug.mesh.userData.barFg.position.x = -(1 - fill) * 0.53;
       thug.punchTimer -= dt;
       thug.shootTimer -= dt;
       if (dist < 2.1 && thug.punchTimer <= 0) {

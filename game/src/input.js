@@ -45,6 +45,8 @@ export function createInput() {
 
   const has = (a, b) => held.has(a) || held.has(b);
   return {
+    /** True while the given key code is held down. */
+    isHeld(code) { return held.has(code); },
     /** Forward/back/left/right as -1, 0 or 1, from WASD or arrows. */
     drive() {
       return {

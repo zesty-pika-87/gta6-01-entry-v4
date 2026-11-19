@@ -77,9 +77,10 @@ export function createHud() {
         const d = Math.round(Math.sqrt(dx * dx + dz * dz));
         if (d > 12) {
           arrowEl.style.display = 'block';
-          const dir = Math.atan2(dx, -dz);
+          // Point the arrow at the target relative to where the player faces.
+          const bearing = Math.atan2(dx, dz) - (playerPos.heading || 0);
           arrowEl.textContent = `▲ ${d} m`;
-          arrowEl.style.transform = `translateX(-50%) rotate(${0}deg)`;
+          arrowEl.style.transform = `translateX(-50%) rotate(${(-bearing * 180) / Math.PI}deg)`;
         } else {
           arrowEl.style.display = 'none';
         }

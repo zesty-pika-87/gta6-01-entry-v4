@@ -127,5 +127,19 @@ export function createPedestrians(scene, rng, count) {
     return best;
   }
 
-  return { peds, update, nearest };
+  /** Scatter every pedestrian near a point (gunfire, a crash): they run away. */
+  function scatter(x, z, radius) {
+    for (const ped of peds) {
+      const dx = ped.x - x;
+      const dz = ped.z - z;
+      const d = Math.sqrt(dx * dx + dz * dz) || 1;
+      if (d < radius) {
+        ped.targetX = ped.x + (dx / d) * 22;
+        ped.targetZ = ped.z + (dz / d) * 22;
+        ped.speed = ped.baseSpeed * 2.6;
+      }
+    }
+  }
+
+  return { peds, update, nearest, scatter };
 }

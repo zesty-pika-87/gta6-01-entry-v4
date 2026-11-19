@@ -47,6 +47,11 @@ export function createMissions(scene, rng) {
     return { tag: `MISSION ${m.id} · ${m.name.toUpperCase()}`, text: s ? s.text : '' };
   }
 
+  /** "Mission 3/8" for the board header and the toast line. */
+  function progressLabel(state) {
+    return `MISSION ${Math.min(state.missionsDone + 1, 8)}/8`;
+  }
+
   function startMission(state, index, onDialog) {
     state.missionIndex = index;
     state.missionStep = 0;
@@ -141,5 +146,5 @@ export function createMissions(scene, rng) {
     raceRings.forEach((r) => { r.visible = on; });
   }
 
-  return { mission, step, objectiveText, startMission, targetPos, advance, update, showRace, get activeTarget() { return activeTarget; } };
+  return { mission, step, objectiveText, progressLabel, startMission, targetPos, advance, update, showRace, get activeTarget() { return activeTarget; } };
 }

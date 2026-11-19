@@ -27,6 +27,17 @@ export function createStory() {
     say('COSTA PALMA', text, 4);
   }
 
+  const AMBIENT_TIPS = [
+    'Tip: park a stolen car at the garage (press G there) to keep it forever.',
+    'Tip: 12 Sun Medallions hide around the city — each one pays $50.',
+    'Tip: a CHAIN of 5 or more pays a cash bonus when it ends safely.',
+  ];
+  let tipIndex = 0;
+  function ambientTip() {
+    say('COSTA PALMA', AMBIENT_TIPS[tipIndex % AMBIENT_TIPS.length], 5);
+    tipIndex += 1;
+  }
+
   function update(dt, show, hide) {
     if (current) {
       timer -= dt;
@@ -59,5 +70,5 @@ export function createStory() {
     }));
   }
 
-  return { say, missionBrief, missionDone, tip, update, clear, boardRows, characters: CHARACTERS };
+  return { say, missionBrief, missionDone, tip, ambientTip, update, clear, boardRows, characters: CHARACTERS };
 }

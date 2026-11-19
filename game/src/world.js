@@ -404,7 +404,6 @@ export function buildWorld(scene, rng) {
     else palmSpots.push([rng.pick(ROADS) + rng.pick([-9.5, 9.5]), rng.range(-100, 100)]);
   }
   for (const [px, pz] of palmSpots) {
-    if (Math.abs(px) < 112 && ROADS.some((r) => Math.abs(pz - r) < 6) && Math.abs(px + 112) > 4) { /* near road: keep */ }
     const palm = new THREE.Group();
     const trunk = new THREE.Mesh(trunkGeo, trunkMat);
     trunk.position.y = 3.25;
